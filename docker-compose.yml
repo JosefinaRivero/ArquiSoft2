@@ -1,16 +1,13 @@
-version: '3.8'
-
 services:
   # Frontend React
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Cambiado para nginx
     environment:
       - REACT_APP_API_URL=http://localhost:8080/api
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     depends_on:
       - api-gateway
 
@@ -145,17 +142,6 @@ services:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     depends_on:
       - api-gateway
-
-  # Nginx para servir archivos estáticos
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "8090:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./uploads:/usr/share/nginx/html/uploads
-    depends_on:
-      - frontend
 
 volumes:
   mongodb_data:
